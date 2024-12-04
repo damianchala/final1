@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital VideoGames</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/categorias.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+
+  <body>
+    <header>
+      <img src="/img/logo.png" alt="Logo" class="logo" />
+      <h1 class="tittle">Digital VideoGames</h1>
+      <nav>
+        <ul>
+          <li><a href="login.html">Salir</a></li>
+          <li><a href="biblioteca.html">Biblioteca</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar" />
+      </div>
+      <div class="header-buttons">
+        <button class="crud-button add-game" id="agregar-videojuego">
+          Agregar
+        </button>
+        <button class="crud-button edit-game" id="editar-videojuego">
+          <i class="fas fa-pencil-alt"></i>
+        </button>
+        <button class="crud-button delete-game" id="eliminar-videojuego">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <div class="profile">
+        <a href="perfil.html"><i class="fas fa-user"></i>
+        </a>
+      </div>
+    </header>
+
+    <div class="wrapper">
+      <aside>
+        <nav>
+          <ul class="menu">
+            <li>
+              <button data-categoria="todos" class="btn category active">
+                <i class="fas fa-gamepad"></i>Todos los juegos
+              </button>
+            </li>
+            <li>
+              <button id="nueva-categoria" class="btn category">
+                <i class="fas fa-plus"></i>Agregar Categoría
+              </button>
+            </li>
+            <h2>Generos</h2>
+            <ul>
+              <% categorias.forEach(categoria => { %>
+              <li>
+                <button
+                  data-categoria="<%= categoria.nombre %>"
+                  class="btn category"
+                >
+                  <i class="fas fa-gamepad"></i><%= categoria.nombre %>
+                </button>
+              </li>
+              <% }); %>
+            </ul>
+            <li>
+              <a class="btn boton-menu active" href="/carrito">
+                <i class="fas fa-shop"></i>Carrito
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <footer class="texto-footer">
+          <p>&copy; 2024 Digital Video Games</p>
+        </footer>
+      </aside>
+
+      <main>
+        <h2 class="titulo-principal" id="titulo-principal">Todos los juegos</h2>
+        <div id="contenedor-productos" class="contenedor-productos">
+          <% productos.forEach(producto => { %>
+          <div
+            class="producto"
+            data-categoria="<%= producto.categoria %>"
+            data-id="<%= producto.id %>"
+          >
+            <img
+              class="producto-imagen"
+              src="<%= producto.imagen %>"
+              alt="<%= producto.titulo %>"
+            />
+            <div class="producto-detalles">
+              <h3 class="producto-titulo"><%= producto.titulo %></h3>
+              <p class="producto-precio"><%= producto.precio %></p>
+              <button class="add-button" data-id="<%= producto.id %>">
+                Agregar al carrito
+              </button>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal para agregar un videojuego -->
+    <div id="modal-agregar">
+      <div class="modal-contenido">
+        <h2>Agregar Videojuego</h2>
+        <form id="form-agregar-videojuego" enctype="multipart/form-data">
+          <label for="titulo">Título:</label>
+          <input type="text" id="titulo" name="titulo" required /><br /><br />
+
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" name="categoria" required>
+            <% categorias.forEach(categoria => { %>
+            <option value="<%= categoria.id_categoria %>">
+              <%= categoria.nombre %>
+            </option>
+            <% }); %>
+          </select>
+          <br /><br />
+
+          <label for="precio">Precio:</label>
+          <input
+            type="number"
+            id="precio"
+            name="precio"
+            step="0.01"
+            required
+          /><br /><br />
+
+          <label for="imagen">Imagen:</label>
+          <input
+            type="file"
+            id="imagen"
+            name="imagen"
+            accept="image/*"
+            required
+          /><br /><br />
+
+          <button type="submit">Agregar Videojuego</button>
+        </form>
+        <button id="cerrar-modal"><i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal para editar un videojuego -->
+    <div id="modal-editar">
+      <div class="modal-editar-contenido">
+        <h2>Editar Videojuego</h2>
+        <form id="form-editar-videojuego" enctype="multipart/form-data">
+          <input type="hidden" id="videojuego-id" name="id" />
+
+          <!-- Select para elegir el videojuego a editar -->
+          <label for="videojuego-select">Selecciona un Videojuego:</label>
+          <select id="videojuego-select" name="videojuego" required>
+            <option value="">Seleccionar videojuego...</option>
+            <% productos.forEach(producto => { %>
+            <option
+              value="<%= producto.id %>"
+              data-titulo="<%= producto.titulo %>"
+              data-precio="<%= producto.precio %>"
+              data-categoria="<%= producto.categoria %>"
+              data-imagen="<%= producto.imagen %>"
+            >
+              <%= producto.titulo %>
+            </option>
+            <% }); %></select
+          ><br /><br />
+
+          <!-- Título del videojuego -->
+          <label for="titulo-editar">Título:</label>
+          <input
+            type="text"
+            id="titulo-editar"
+            name="titulo"
+            required
+          /><br /><br />
+
+          <!-- Categoría del videojuego -->
+          <label for="categoria-editar">Categoría:</label>
+          <select id="categoria-editar" name="categoria" required>
+            <% categorias.forEach(categoria => { %>
+            <option value="<%= categoria.id_categoria %>">
+              <%= categoria.nombre %>
+            </option>
+            <% }); %></select
+          ><br /><br />
+
+          <!-- Precio del videojuego -->
+          <label for="precio-editar">Precio:</label>
+          <input
+            type="number"
+            id="precio-editar"
+            name="precio"
+            step="0.01"
+            required
+          /><br /><br />
+
+          <!-- Imagen del videojuego -->
+          <label for="imagen-editar">Imagen:</label>
+          <input
+            type="file"
+            id="imagen-editar"
+            name="imagen"
+            accept="image/*"
+          /><br /><br />
+
+          <button type="submit">Guardar Cambios</button>
+        </form>
+        <button id="cerrar-modal-editar">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Modal para eliminar un videojuego -->
+    <div id="modal-eliminar" class="modal">
+      <div class="modal-content">
+        <span id="cerrar-modal-eliminar" class="cerrar-modal">&times;</span>
+        <h2>¿Seguro que deseas eliminar este videojuego?</h2>
+        <select id="select-videojuego">
+          <option value="">Seleccionar videojuego...</option>
+          <% productos.forEach(producto => { %>
+          <option value="<%= producto.id %>"><%= producto.titulo %></option>
+          <% }); %></select
+        ><br /><br />
+        <button id="eliminar-seleccionado">Eliminar</button>
+      </div>
+    </div>
+
+    <!-- Modal para agregar categoría -->
+    <div id="modal-agregar-categoria" class="modal">
+      <div class="modal-contenido">
+        <h2>Agregar Nueva Categoría</h2>
+        <form id="agregarCategoriaForm">
+          <label for="categoriaNombre">Nombre de la nueva categoría:</label>
+          <input type="text" id="categoriaNombre" name="nombre" required />
+          <button type="submit">Agregar</button>
+        </form>
+        <span id="cerrar-modal-categoria" class="cerrar-modal">&times;</span>
+      </div>
+    </div>
+
+    <script>
+      // Asumiendo que ya tienes un archivo 'videojuego.js' que maneja este tipo de eventos
+document.querySelectorAll('.add-button').forEach(button => {
+  button.addEventListener('click', function() {
+    const productoId = this.getAttribute('data-id'); // Obtenemos el id del producto
+
+    // Realizamos una solicitud al servidor para agregar el producto al carrito
+    fetch('/agregar-al-carrito', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: productoId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Producto agregado al carrito');
+      } else {
+        alert('Hubo un error al agregar el producto al carrito');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+});
+
+    </script>
+
+    <script src="/js/videojuego.js"></script>
+    <script src="/js/modales.js"></script>
+    <script src="/js/filtro.js"></script>
+    <script src="/js/categoria.js"></script>
+  </body>
+</html>

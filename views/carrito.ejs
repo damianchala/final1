@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrito</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/categorias.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <aside>
+        <nav>
+          <li>
+            <a class="btn" href="/tienda"><i class="fas fa-store"></i>TIENDA</a>
+          </li>
+          <li>
+            <a class="btn" href="biblioteca.html"
+              ><i class="fas fa-book"></i>BIBLIOTECA</a
+            >
+          </li>
+        </nav>
+        <footer class="texto-footer">
+          <p>&copy; 2024 Digital Video Games</p>
+        </footer>
+      </aside>
+      <main>
+        <h2 class="titulo-principal">Carrito</h2>
+        <div class="contenedor-carrito">
+            <% if (productos.length === 0) { %>
+              <p id="carrito-vacio" class="carrito-vacio">
+                Tu carrito está vacío :c
+              </p>
+            <% } else { %>
+              <div id="carrito-productos" class="carrito-productos">
+                <% productos.forEach(function(producto) { %>
+                  <div class="producto">
+                    <!-- Imagen del producto a la izquierda -->
+                    <img
+                      src="<%= producto.imagen %>"
+                      alt="<%= producto.titulo %>"
+                      class="producto-imagen"
+                    />
+          
+                    <!-- Detalles del producto (título y precio) a la derecha -->
+                    <div class="producto-detalles">
+                      <h3><%= producto.titulo %></h3>
+                      <p>Precio: <%= producto.precio %></p>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+          
+
+        <div id="carrito-acciones" class="carrito-acciones">
+          <div class="carrito-acciones-izquierda">
+            <button
+              id="carrito-acciones-vaciar"
+              class="btn carrito-acciones-vaciar"
+              onclick="vaciarCarrito()"
+            >
+              Vaciar Carrito
+            </button>
+          </div>
+          <div class="carrito-acciones-derecha">
+            <div class="carrito-acciones-total">
+              <p>Total</p>
+              <p id="Total"><%= total %></p>
+            </div>
+            <button
+              id="carrito-acciones-comprar"
+              class="btn carrito-acciones-comprar"
+              onclick="comprarCarrito()"
+            >
+              COMPRAR AHORA
+            </button>
+          </div>
+        </div>
+        <!-- Este cierre mueve dentro del bloque condicional EJS para evitar errores -->
+
+        <p
+          id="carrito-comprado"
+          class="carrito-comprado <%= comprado ? '' : 'disabled' %>"
+        >
+          Gracias por tu compra c:
+        </p>
+      </main>
+    </div>
+    <script>
+      // Función para vaciar el carrito
+      function vaciarCarrito() {
+        fetch("/vaciar-carrito", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              location.reload(); // Recargamos la página para mostrar el carrito vacío
+            }
+          });
+      }
+
+      // Función para realizar la compra
+      function comprarCarrito() {
+        fetch("/comprar-carrito", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              document
+                .getElementById("carrito-comprado")
+                .classList.remove("disabled");
+              location.reload(); // Recargamos la página para mostrar el mensaje de compra
+            }
+          });
+      }
+    </script>
+  </body>
+</html>
